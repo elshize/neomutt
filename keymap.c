@@ -669,7 +669,7 @@ struct KeyEvent km_dokey_event(enum MenuType mtype)
           /* If a timeout was not received, or the window was resized, exit the
            * loop now.  Otherwise, continue to loop until reaching a total of
            * $timeout seconds.  */
-          if ((tmp.ch != OP_TIMEOUT) || SigWinch)
+          if ((tmp.op != OP_TIMEOUT) || SigWinch)
             goto gotkey;
 #ifdef USE_INOTIFY
           if (MonitorFilesChanged)
@@ -688,12 +688,11 @@ struct KeyEvent km_dokey_event(enum MenuType mtype)
   gotkey:
 #endif
     /* hide timeouts, but not window resizes, from the line editor. */
-    if ((mtype == MENU_EDITOR) && (tmp.ch == OP_TIMEOUT) && !SigWinch)
+    if ((mtype == MENU_EDITOR) && (tmp.op == OP_TIMEOUT) && !SigWinch)
       continue;
 
-    if (tmp.ch < 0)
+    if ((tmp.op == OP_TIMEOUT) || (tmp.op == OP_ABORT))
     {
-      tmp.op = tmp.ch;
       return tmp;
     }
 
